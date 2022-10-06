@@ -17,7 +17,15 @@ public class TableService {
         return tableRepository.findAll();
     }
 
-    public void deleteTablebyId(String id)
+    public Boolean checkIfTableExists(int tableNumber, String restaurantId) {
+        return tableRepository.findTableBy(tableNumber, restaurantId).isPresent();
+    }
+
+    public Table getSpecificTable(int tableNumber, String restaurantId) {
+        return tableRepository.findFirstBy(tableNumber, restaurantId);
+    }
+
+    public void deleteTableById(String id)
     {
         tableRepository.deleteById(id);
     }

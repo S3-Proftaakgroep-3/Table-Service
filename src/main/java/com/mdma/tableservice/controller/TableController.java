@@ -20,14 +20,32 @@ public class TableController {
     }
 
     @PostMapping("/create")
-    public Table reserveTable(@RequestBody Table table){
+    public Table createTable(@RequestBody Table table){
         return tableService.postTable(table);
+    }
+
+    @RequestMapping(path = "/tableNumber/{tableNumber}/restaurantId/{restaurantId}", method = RequestMethod.GET)
+    public Table reserveTable(@PathVariable int tableNumber, @PathVariable String restaurantId) {
+        Boolean tableExists = tableService.checkIfTableExists(tableNumber, restaurantId);
+
+        Table table = new Table();
+
+        if (!tableExists) {
+            table.setRestaurantId(restaurantId);
+            table.setTableNumber(tableNumber);
+            tableService.postTable(table);
+        }
+
+        table = tableService.getSpecificTable(tableNumber, restaurantId);
+
+        return table;
     }
 
     @DeleteMapping("/delete{id}")
     public void deleteTable(@PathVariable String id) {
-        tableService.deleteTablebyId(id);
+        tableService.deleteTableById(id);
     }
+
     @PutMapping("/update/{id}")
     public Table updateTable(Table table)
     {
