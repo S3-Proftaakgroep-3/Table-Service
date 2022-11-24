@@ -34,4 +34,21 @@ public class TableController {
     public ResponseEntity<String> updateRestaurant(@RequestParam String id, @RequestBody Table table) {
         return tableService.updateTable(id, table);
     }
+
+    @RequestMapping(path = "/tableNumber/{tableNumber}/restaurantId/{restaurantId}", method = RequestMethod.GET)
+    public Table reserveTable(@PathVariable int tableNumber, @PathVariable String restaurantId) {
+        Boolean tableExists = tableService.checkIfTableExists(tableNumber, restaurantId);
+
+        Table table = new Table();
+
+        if (!tableExists) {
+            table.setRestaurantId(restaurantId);
+            table.setTableNumber(tableNumber);
+            tableService.postTable(table);
+        }
+
+        table = tableService.getSpecificTable(tableNumber, restaurantId);
+
+        return table;
+    }
 }

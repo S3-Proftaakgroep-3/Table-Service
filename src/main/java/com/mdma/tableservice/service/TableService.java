@@ -21,27 +21,34 @@ public class TableService {
 
     public ResponseEntity<String> postTable(Table Table) {
         if (tableRepository.save(Table) == Table)
-            return new ResponseEntity<String>( "Table has been saved" , HttpStatus.OK);
+            return new ResponseEntity<String>("Table has been saved", HttpStatus.OK);
         else
             return new ResponseEntity<String>("Table hasn't been saved", HttpStatus.BAD_REQUEST);
     }
 
     public ResponseEntity<Boolean> deleteTableById(String id) {
         tableRepository.deleteById(id);
-        return new ResponseEntity<Boolean>( true , HttpStatus.OK);
+        return new ResponseEntity<Boolean>(true, HttpStatus.OK);
     }
 
     public ResponseEntity<String> updateTable(String id, Table Table) {
         Table.setId(id);
-        if (tableRepository.findById(id).isPresent()){
-            if (tableRepository.save(Table) == Table){
-                return new ResponseEntity<String>( "Table has been updated" , HttpStatus.OK);
-            }
-            else
+        if (tableRepository.findById(id).isPresent()) {
+            if (tableRepository.save(Table) == Table) {
+                return new ResponseEntity<String>("Table has been updated", HttpStatus.OK);
+            } else
                 return new ResponseEntity<String>("Table failed to update", HttpStatus.BAD_REQUEST);
-        }
-        else {
+        } else {
             return new ResponseEntity<String>("Table hasn't been updated: Table not found", HttpStatus.BAD_REQUEST);
         }
     }
+
+    public Boolean checkIfTableExists(int tableNumber, String restaurantId) {
+        return tableRepository.findTableBy(tableNumber, restaurantId).isPresent();
+    }
+
+    public Table getSpecificTable(int tableNumber, String restaurantId) {
+        return tableRepository.findFirstBy(tableNumber, restaurantId);
+    }
+
 }
